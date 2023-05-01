@@ -1,15 +1,20 @@
 package com.example.calculator;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.nio.charset.CharsetEncoder;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     StringBuffer myArray = new StringBuffer("");
     Integer d_length = 0;
     TextView d_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +43,42 @@ public class MainActivity extends AppCompatActivity {
         Button delete = findViewById(R.id.del);
 
 
-
-        delete.setOnClickListener(v->{
-            if(myArray.length() != 0){
-                myArray.deleteCharAt(myArray.length()-1);
+        delete.setOnClickListener(v -> {
+            if (myArray.length() != 0) {
+                myArray.deleteCharAt(myArray.length() - 1);
                 d_view.setText(myArray);
             }
             Log.d("msg", "Delete button working, last char: " + myArray);
+        });
+
+        delete.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (myArray.length() != 0) {
+//                    for (int i = 0; i <= myArray.length(); i++) {
+//                        myArray.deleteCharAt(myArray.length() - 1);
+//                        d_view.setText(myArray);
+//                    }
+                    d_view.setText("");
+                    return true;
+                } else {
+                    Notification notification;
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        NotificationChannel channel = new NotificationChannel("Basic", "General", NotificationManager.IMPORTANCE_DEFAULT);
+                        notification = (Notification) new Notification.Builder(getApplicationContext(), "Basic")
+                                .setContentTitle("Alert!")
+                                .setContentText("Nothing to clear !")
+                                .setSmallIcon(R.drawable.ic_notify)
+                                .setChannelId("Basic")
+                                .build();
+
+                        nm.notify(10, notification);
+
+                    }
+                    return false;
+                }
+            }
         });
 
 //        Initiating buttons at runtime
@@ -59,10 +94,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void btnClick (Button isButton){
+    public void btnClick(Button isButton) {
         isButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 d_text += isButton.getText().toString();
                 myArray.append(isButton.getText().toString());
 //                d_length = d_text.length();
@@ -71,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
 //                    d_view.setText(d_text.toString());
                     d_view.setText(myArray);
                     Log.d("msg", myArray + " and the size of the array is : "+ d_length);
+
+
                 }
             }
         });
