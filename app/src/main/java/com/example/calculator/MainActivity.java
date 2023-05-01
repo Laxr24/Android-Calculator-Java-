@@ -33,17 +33,20 @@ public class MainActivity extends AppCompatActivity {
         Button btn_8 = findViewById(R.id.btn8);
         Button btn_9 = findViewById(R.id.btn9);
 //        Operational buttons
-        Button add = findViewById(R.id.add);
+//        Button add = findViewById(R.id.add);
+        Button delete = findViewById(R.id.del);
 
 
 
-        add.setOnClickListener(v->{
+        delete.setOnClickListener(v->{
             if(myArray.length() != 0){
                 myArray.deleteCharAt(myArray.length()-1);
                 d_view.setText(myArray);
             }
             Log.d("msg", "Delete button working, last char: " + myArray);
         });
+
+//        Initiating buttons at runtime
         btnClick(btn_1);
         btnClick(btn_2);
         btnClick(btn_3);
